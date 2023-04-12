@@ -1,0 +1,41 @@
+@import './colors.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+body {
+  height: 100vh;
+  background-color: rgb(244, 246, 248);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: 'Baloo 2', cursive;
+  font-weight: 700;
+}
+
+p,
+span,
+button,
+input,
+label {
+  font-family: 'Roboto', sans-serif;
+}
+
+button {
+  cursor: pointer;
+}

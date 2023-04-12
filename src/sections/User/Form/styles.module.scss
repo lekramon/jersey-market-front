@@ -1,0 +1,85 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    font-family: Nunito, sans-serif;
+    display: block;
+    font-size: 30px;
+    color: black;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .formContent {
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 77px 55px 33px 55px;
+    box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.2);
+  }
+
+  .inputContainer {
+    display: flex;
+    gap: 5rem;
+    width: 100%;
+
+    div {
+      flex: 1;
+
+      .errorMessage {
+        color: rgb(255, 86, 48);
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+        margin-left: 1rem;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        height: 5rem;
+
+        input {
+          border-radius: 8px;
+          border: 1px solid rgba(0, 0, 0, 0.23);
+          margin-top: 0.5rem;
+          padding-left: 1rem;
+          flex: 1;
+
+          &.error {
+            border-color: rgb(255, 86, 48);
+          }
+        }
+
+        select {
+          flex: 1;
+          border-radius: 8px;
+          border: 1px solid rgba(0, 0, 0, 0.23);
+          margin-top: 0.5rem;
+          padding-left: 1rem;
+
+          &.error {
+            border-color: rgb(255, 86, 48);
+          }
+        }
+      }
+    }
+  }
+  button {
+    margin-left: auto;
+    width: 250px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: rgb(0, 171, 85);
+    color: white;
+  }
+}

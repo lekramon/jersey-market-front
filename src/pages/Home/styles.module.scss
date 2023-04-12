@@ -1,0 +1,21 @@
+.homeContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  background: linear-gradient(
+    to bottom,
+    #fafafa,
+    #f4f1fb,
+    #f6f0e8,
+    #f5eedc,
+    #f0e7eb,
+    #f4f1fb,
+    #fafafa 20%
+  );
+
+  .homeContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+}
