@@ -57,6 +57,7 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
     email: yup.string().email('E-mail inválido').required('Email é obrigatório'),
     name: yup.string().required('Nome é obrigatório'),
     userGroup: yup.number().positive('Perfil é obrigatório'),
+    status: yup.number().positive('Status é Obrigatório'),
     cpf: yup.string().required('CPF é obrigatório'),
     confirmPassword: yup.string().oneOf([yup.ref('password')], 'As senhas não coincidem.'),
     password: yup.string(),

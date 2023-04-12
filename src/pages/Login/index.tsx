@@ -1,57 +1,100 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import './styles.css';
+import { NavLink } from 'react-router-dom';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useForm } from 'react-hook-form';
+import styles from './styles.module.scss';
 import logoIMG from '../../assets/logoXgames.png';
+import axios from 'axios';
+
+interface LoginData {
+    email: string;
+    password: string;
+}
 
 export const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const onSubmit = async () => {
-    
+  const schema = yup.object().shape({
+    email: yup.string().email('E-mail inválido').required('Email é obrigatório'),
+    password: yup.string().required('Senha é obrigatória'),
+  });
+
+  const defaultValues = {
+    email: "",
+    password:  ""
+  }
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginData>({
+    resolver: yupResolver(schema),
+    defaultValues: defaultValues
+  });
+
+  const onSubmit = async (data: LoginData) => {
+    try {
+      console.log(data, "Tentando fazer Login");
+      await axios.post('https://jersey-market-api-production.up.railway.app/user/login', data)
+      .then(function (response) {
+        console.log(response.data.userGroup, "Resposta do login");
+      });
+      toast.success('Login realizado com sucesso!', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      console.log('Tentando navegar');
+      <nav>
+        <NavLink to="/admin/user/list" />
+      </nav>
+    } catch (e) {
+      toast.error('Falha ao realizar o Login!', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   }
 
   return (
-    <div className="container-login">
-      <div className="wrap-login">
-        <form className="login-form" onSubmit={onSubmit}>
-          <span className="login-form-title">Bem-Vindo!</span>
-          <span className="login-form-title">
-            <img src={logoIMG} alt="Logo Xgames" />
-          </span>
-
-          <div className="wrap-input">
-            <input
-              className={email !== ' ' ? 'has-val input' : 'input'}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <span className="focus-input" data-placeholder="Email"></span>
-          </div>
-
-          <div className="wrap-input">
-            <input
-              className={password !== ' ' ? 'has-val input' : 'input'}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <span className="focus-input" data-placeholder="Password"></span>
-          </div>
-
-          <div className="container-login-form-btn">
-            <button className="login-form-btn">Login</button>
-          </div>
-
-          <div className="text-center">
-            <span className="txt1">Não possui conta?</span>
-            <Link className="txt2" to="/admin/user/register">
-              Criar conta.
-            </Link>
-          </div>
-        </form>
+  <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
+    <ToastContainer />
+    <div className={styles.formContent}>
+      <h1>Login</h1>
+      <div>
+      <img
+          src={logoIMG}
+          alt="Logo da XSports"
+          className={styles.headerLogo}
+        />
       </div>
+      <div className={styles.inputContainer}>
+        <div>
+          <label>
+            Email
+            <input type="text"
+            {...register('email')}
+            placeholder='Digite seu endereço de email'
+            className={errors.email ? styles.error : ''}
+            />
+          </label>
+          {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
+        </div>
+      </div>
+      <div className={styles.inputContainer}>
+        <div>
+          <label>
+            Senha
+            <input type="password"
+            {...register('password')}
+            placeholder='Digite sua senha'
+            className={errors.password ? styles.error : ''}
+              />
+            </label>
+            {errors.password && <p className={styles.errorMessage}>{errors.password.message}</p>}
+        </div>
+      </div>
+      <button type="submit">Logar</button>
     </div>
+  </form>
   );
 };
