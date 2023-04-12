@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './styles/global.scss';
 import { Router } from './Router';
 import { CartContextProvider } from './contexts/CartContext';
+import { Login } from './pages/Login';
 function App() {
   const [count, setCount] = useState(0);
 

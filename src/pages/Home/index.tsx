@@ -5,11 +5,8 @@ import { ProductsList } from '../../sections/ProductsList';
 
 export const Home = () => {
   return (
-    <div className={styles.homeContainer}>
-      <div className={styles.homeContent}>
-        <IntroSection />
-        <ProductsList />
-      </div>
+    <div>
+      <h1>ACABOU O PROJETO</h1>
     </div>
   );
 };

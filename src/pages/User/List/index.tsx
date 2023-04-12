@@ -49,7 +49,7 @@ export const UserList = () => {
         {users.map(users => (
           <tr key={users.id}>
             <td>{users.id}</td>
-            <td><NavLink to={`/admin/user/${users.id}/edit`} >{users.name}</NavLink></td>
+            <td>{users.name}</td>
             <td>{users.email}</td>
             <td>{users.userGroup}</td>
             <td>{users.status}</td>

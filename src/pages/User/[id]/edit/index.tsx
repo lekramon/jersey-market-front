@@ -10,9 +10,10 @@ export const UserEdit = () => {
   const retrieveUser = async() => {
     try {
       const { data } = await axios.get(`https://jersey-market-api-production.up.railway.app/user/id${id}`)
+      console.log(data, "User/Id")
       setUser(data)
     } catch(e) {
-      console.log(e)
+      console.log(e, "User/Id")
     }
   }
 

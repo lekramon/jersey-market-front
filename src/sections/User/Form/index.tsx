@@ -14,6 +14,7 @@ interface FormData {
   password?: string;
   confirmPassword?: string;
   userGroup: number | string;
+  status: number;
   email: string;
 }
 
@@ -21,6 +22,7 @@ type currentUser = {
   name: string;
   cpf: string;
   userGroup: "ADMIN" | "STOREKEEPER" | "CLIENT";
+  status: "INACTIVE" | "ACTIVE";
   email: string;
   id: number;
 }
@@ -36,6 +38,11 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
     "ADMIN": 1,
     "STOREKEEPER": 2,
     "CLIENT": 3
+  }
+
+  const userStatus = {
+    "INACTIVE": 0,
+    "ACTIVE": 1
   }
 
   const passwordValidation = yup.object().shape({
@@ -63,6 +70,7 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
     confirmPassword: "",
     cpf: isEdit ? currentUser?.cpf : "",
     userGroup: isEdit && currentUser?.userGroup ? userMap[currentUser.userGroup] : 0,
+    status: isEdit && currentUser?.status ? userStatus[currentUser.status]: 1,
     email: isEdit ? currentUser?.email : ""
   }
 
@@ -85,6 +93,7 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
 
     try {
       if(isEdit) {
+        console.log(data);
         await axios.put(`https://jersey-market-api-production.up.railway.app/user/id${currentUser.id}/update`, data);
         toast.success('Usuário atualizado com sucesso !', {
           position: toast.POSITION.TOP_RIGHT,
@@ -102,6 +111,36 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
       console.log(e);
     }
   };
+
+  const render = (isEditing: Boolean) => {
+    if(!isEditing){
+      return(
+      <div>
+      <label>
+        Email*
+        <input
+          type="text"
+          {...register('email')}
+          placeholder="Email*"
+          className={errors.email ? styles.error : ''}
+          disabled={isEdit}
+        />
+      </label>
+      {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
+    </div>);
+    } else {
+      return(<div>
+      <label>
+        Status*
+        <select {...register('status')} className={errors.userGroup ? styles.error : ''} defaultValue={0}>
+          <option value="0">Inativo</option>
+          <option value="1">Ativo</option>
+        </select>
+      </label>
+      {errors.userGroup && <p className={styles.errorMessage}>{errors.userGroup.message}</p>}
+    </div>);
+    }
+  }
 
   return (
     <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
@@ -122,21 +161,8 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
             </label>
             {errors.name && <p className={styles.errorMessage}>{errors.name.message}</p>}
           </div>
-          <div>
-            <label>
-              Email*
-              <input
-                type="text"
-                {...register('email')}
-                placeholder="Email*"
-                className={errors.email ? styles.error : ''}
-                disabled={isEdit}
-              />
-            </label>
-            {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
-          </div>
+          {render(isEdit)}
         </div>
-
         <div className={styles.inputContainer}>
           <div>
             <label>
@@ -206,3 +232,4 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
     </form>
   );
 };
+
