@@ -2,11 +2,13 @@
   h2 {
     font-size: 2rem;
     margin-bottom: 2rem;
+    text-align: center;
   }
 
   .productList {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
+    margin-left: 10rem;
   }
 }

@@ -4,6 +4,7 @@ import './styles/global.scss';
 import { Router } from './Router';
 import { CartContextProvider } from './contexts/CartContext';
 import { Login } from './pages/Login';
+import "./index.css";
 function App() {
   const [count, setCount] = useState(0);
 

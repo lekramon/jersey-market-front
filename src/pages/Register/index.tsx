@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
 import ReactInputMask from 'react-input-mask';
 import styles from './styles.module.scss';
 import axios from 'axios';
@@ -17,6 +18,8 @@ interface FormData {
 }
 
 export const Register = () => {
+  const navigate = useNavigate();
+
   const schema = yup.object().shape({
     email: yup.string().email('E-mail inválido').required('Email é obrigatório'),
     password: yup.string().required('Senha é obrigatório'),
@@ -45,6 +48,7 @@ export const Register = () => {
       toast.success('Usuário cadastrado com sucesso !', {
         position: toast.POSITION.TOP_RIGHT,
       });
+      setTimeout(() => { navigate('/') }, 2000);
     } catch (e) {
       toast.error('Houve um erro inesperado, tente novamente!', {
         position: toast.POSITION.TOP_RIGHT,
