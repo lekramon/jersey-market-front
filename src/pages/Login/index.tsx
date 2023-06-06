@@ -47,12 +47,11 @@ export const Login = () => {
 
   const onSubmit = async (data: LoginData) => {
     try {
-      console.log(data, "Tentando fazer Login");
-      await axios.post('https://jersey-market-api-production.up.railway.app/user/login', data)
+      await axios.post('https://jersey-market-api-production-1377.up.railway.app/user/login', data)
         .then(responseLogin)
         .catch(
           async function () {
-            await axios.post('https://jersey-market-api-production.up.railway.app/client/login', data)
+            await axios.post('https://jersey-market-api-production-1377.up.railway.app/client/login', data)
               .then(responseLogin)
           }
         );

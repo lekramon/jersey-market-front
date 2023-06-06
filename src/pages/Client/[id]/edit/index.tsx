@@ -18,10 +18,11 @@ interface FormData {
 
 const ClientPage = (props: any) => {
     const { userLoged, signIn } = useContext(CartContext);
-    const [enderecos, setEnderecos] = useState([]);
+    const [enderecos, setEnderecos] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [estadoAlteracao, setEstadoAlteracao] = useState(false);
     const [enderecoPadrao, setEnderecoPadrao] = useState();
+    const [enderecoInicial, setEnderecoInicial] = useState()
 
     const gender = userLoged.gender === 'MASCULINE' ? 1 : 2;
     const validarData = (value: string) => {
@@ -65,15 +66,14 @@ const ClientPage = (props: any) => {
     const classesErro = 'text-xs text-red-500 absolute top-14 pt-1';
 
     const buscarEnderecos = async () => {
-        const { data } = await axios.get(`https://jersey-market-api-production.up.railway.app/client/address/id${userLoged.id}`);
-        let enderecosAlterados = data.map((item: any) => {
-            return {
-                ...item,
-                checked: item.type === 'DEFAULT'
-            }
-        });
+        const { data } = await axios.get(`https://jersey-market-api-production-1377.up.railway.app/client/address/id${userLoged.id}`);
+        let enderecoPadrao = data.filter((item: any) => item.type === 'DEFAULT');
+        if (enderecoPadrao.length > 0) {
+            setEnderecoPadrao(enderecoPadrao[0].id);
+            setEnderecoInicial(enderecoPadrao[0].id);
+        }
 
-        setEnderecos(enderecosAlterados);
+        setEnderecos(data);
 
     }
 
@@ -91,10 +91,7 @@ const ClientPage = (props: any) => {
     }
 
     const alterarEnderecoPadrao = (e: any) => {
-        if (e.currentTarget) {
-            setEnderecoPadrao(e.currentTarget.value);
-            e.currentTarget.checked = true;
-        }
+        setEnderecoPadrao(e.currentTarget.value);
     }
 
     const onSubmit = async (data: FormData) => {
@@ -102,12 +99,33 @@ const ClientPage = (props: any) => {
             if (!data.password || data.password === '') {
                 delete data.password;
             }
-            await axios.put(`https://jersey-market-api-production.up.railway.app/client/id${userLoged.id}/update`, data)
+            await axios.put(`https://jersey-market-api-production-1377.up.railway.app/client/id${userLoged.id}/update`, data)
                 .then((response) => signIn(response.data));
             toast.success('Usuário alterado com sucesso!', {
                 position: toast.POSITION.TOP_RIGHT,
             });
             setEstadoAlteracao(false);
+        } catch (e) {
+            toast.error('Houve um erro inesperado, tente novamente!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            console.log(e);
+        }
+    }
+
+    const salvarEnderecoPadrao = async () => {
+        try {
+            for (let i = 0; i < enderecos.length; i++) {
+                let endereco = enderecos[i];
+                let data = { type: 1 };
+                if (endereco.id == enderecoPadrao) {
+                    data.type = 0;
+                }
+                await axios.put(`https://jersey-market-api-production-1377.up.railway.app/client/address/${endereco.id}/update`, data)
+            }
+            toast.success('Endereço padrão alterado com sucesso!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
         } catch (e) {
             toast.error('Houve um erro inesperado, tente novamente!', {
                 position: toast.POSITION.TOP_RIGHT,
@@ -128,7 +146,7 @@ const ClientPage = (props: any) => {
         <>
             <div onClick={() => fecharModal()} className={`flex flex-col justify-center w-full h-ful ${showModal ? 'opacity-25' : ''}`}>
                 <ToastContainer />
-                <span className='border-b-2 flex flex-1 justify-center pb-2'>Dados do Cliente</span>
+                <h1 className='font-bold text-2xl border-b-2 flex flex-1 justify-center pb-2'>Dados do Cliente</h1>
                 <div className='flex flex-row gap-12'>
                     <div className={classesDiv}>
                         <span className='p-2 border-b-2'>Informações Pessoais</span>
@@ -200,7 +218,13 @@ const ClientPage = (props: any) => {
                                     enderecos.map((endereco: any) => {
                                         return (
                                             <div key={endereco.id} className='flex justify-start'>
-                                                <input name='rdEnderecoPadrao' type="radio" onChange={alterarEnderecoPadrao} value={endereco.id} />
+                                                <input
+                                                    name='rdEnderecoPadrao'
+                                                    type="radio"
+                                                    onChange={(e: any) => alterarEnderecoPadrao(e)}
+                                                    value={endereco.id}
+                                                    checked={enderecoPadrao == endereco.id}
+                                                />
                                                 <span className='ml-2'>{endereco.logradouro}</span>
                                                 <span>, {endereco.numero}</span>
                                                 <span>, {endereco.bairro}</span>
@@ -215,7 +239,7 @@ const ClientPage = (props: any) => {
                                     <button onClick={() => setShowModal(true)} className={classesBotoes}>Adicionar Endereço</button>
                                 </div>
                                 <div className='w-40'>
-                                    <button disabled className={classesBotoes}>Salvar</button>
+                                    <button onClick={() => salvarEnderecoPadrao()} disabled={enderecoPadrao == enderecoInicial} className={classesBotoes}>Salvar</button>
                                 </div>
                             </div>
                         </div>

@@ -7,12 +7,12 @@ export const UserEdit = () => {
   const { id } = useParams();
   const [user, setUser] = useState()
 
-  const retrieveUser = async() => {
+  const retrieveUser = async () => {
     try {
-      const { data } = await axios.get(`https://jersey-market-api-production.up.railway.app/user/id${id}`)
+      const { data } = await axios.get(`https://jersey-market-api-production-1377.up.railway.app/user/id${id}`)
       console.log(data, "User/Id")
       setUser(data)
-    } catch(e) {
+    } catch (e) {
       console.log(e, "User/Id")
     }
   }
@@ -22,6 +22,6 @@ export const UserEdit = () => {
   }, [])
 
   return (
-      <UserForm isEdit currentUser={user}/>
+    <UserForm isEdit currentUser={user} />
   )
 }

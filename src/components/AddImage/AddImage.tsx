@@ -15,7 +15,7 @@ const AddImage = (props: any) => {
         images.forEach(async function (item: any) {
             try {
                 let data = { file: item }
-                await axios.post(`https://jersey-market-api-production.up.railway.app/product/img/id${product.id}/upload`, data, {
+                await axios.post(`https://jersey-market-api-production-1377.up.railway.app/product/img/id${product.id}/upload`, data, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }

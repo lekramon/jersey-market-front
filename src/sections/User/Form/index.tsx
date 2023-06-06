@@ -6,7 +6,8 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
+import { CartContext } from '../../../contexts/CartContext';
 
 interface FormData {
   name: string;
@@ -32,7 +33,8 @@ interface UserFormProps {
   currentUser?: currentUser;
 }
 
-export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
+export const UserForm = ({ isEdit, currentUser }: UserFormProps) => {
+  const { userLoged } = useContext(CartContext);
 
   const userMap = {
     "ADMIN": 1,
@@ -48,9 +50,9 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
   const passwordValidation = yup.object().shape({
     password: yup.string().required('Senha é obrigatório'),
     confirmPassword: yup
-    .string()
-    .required('Confirmar senha é obrigatório')
-    .oneOf([yup.ref('password')], 'As senhas não coincidem.'),
+      .string()
+      .required('Confirmar senha é obrigatório')
+      .oneOf([yup.ref('password')], 'As senhas não coincidem.'),
   })
 
   const schema = yup.object().shape({
@@ -63,15 +65,15 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
     password: yup.string(),
   });
 
-  if(!isEdit) schema.concat(passwordValidation)
+  if (!isEdit) schema.concat(passwordValidation)
 
   const defaultValues = {
     name: isEdit ? currentUser?.name : "",
-    password:  "",
+    password: "",
     confirmPassword: "",
     cpf: isEdit ? currentUser?.cpf : "",
     userGroup: isEdit && currentUser?.userGroup ? userMap[currentUser.userGroup] : 0,
-    status: isEdit && currentUser?.status ? userStatus[currentUser.status]: 1,
+    status: isEdit && currentUser?.status ? userStatus[currentUser.status] : 1,
     email: isEdit ? currentUser?.email : ""
   }
 
@@ -93,14 +95,14 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
     delete data.confirmPassword;
 
     try {
-      if(isEdit) {
+      if (isEdit) {
         console.log(data);
-        await axios.put(`https://jersey-market-api-production.up.railway.app/user/id${currentUser.id}/update`, data);
+        await axios.put(`https://jersey-market-api-production-1377.up.railway.app/user/id${currentUser?.id}/update`, data);
         toast.success('Usuário atualizado com sucesso !', {
           position: toast.POSITION.TOP_RIGHT,
         });
       } else {
-        await axios.post('https://jersey-market-api-production.up.railway.app/user/register', data);
+        await axios.post('https://jersey-market-api-production-1377.up.railway.app/user/register', data);
         toast.success('Usuário cadastrado com sucesso !', {
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -114,32 +116,32 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
   };
 
   const render = (isEditing: Boolean) => {
-    if(!isEditing){
-      return(
-      <div>
-      <label>
-        Email*
-        <input
-          type="text"
-          {...register('email')}
-          placeholder="Email*"
-          className={errors.email ? styles.error : ''}
-          disabled={isEdit}
-        />
-      </label>
-      {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
-    </div>);
+    if (!isEditing) {
+      return (
+        <div>
+          <label>
+            Email*
+            <input
+              type="text"
+              {...register('email')}
+              placeholder="Email*"
+              className={errors.email ? styles.error : ''}
+              disabled={isEdit}
+            />
+          </label>
+          {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
+        </div>);
     } else {
-      return(<div>
-      <label>
-        Status*
-        <select {...register('status')} className={errors.userGroup ? styles.error : ''} defaultValue={0}>
-          <option value="0">Inativo</option>
-          <option value="1">Ativo</option>
-        </select>
-      </label>
-      {errors.userGroup && <p className={styles.errorMessage}>{errors.userGroup.message}</p>}
-    </div>);
+      return (<div>
+        <label>
+          Status*
+          <select {...register('status')} className={errors.userGroup ? styles.error : ''} defaultValue={0}>
+            <option value="0">Inativo</option>
+            <option value="1">Ativo</option>
+          </select>
+        </label>
+        {errors.userGroup && <p className={styles.errorMessage}>{errors.userGroup.message}</p>}
+      </div>);
     }
   }
 
@@ -186,13 +188,12 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
           <div>
             <label>
               Perfil*
-              <select {...register('userGroup')} className={errors.userGroup ? styles.error : ''} defaultValue={0}>
+              <select disabled={!(isEdit && userLoged.userGroup && userLoged.userGroup === 'ADMIN')} {...register('userGroup')} className={errors.userGroup ? styles.error : 'disabled:bg-zinc-200'} defaultValue={0}>
                 <option value="0" disabled >
                   Selecionar perfil
                 </option>
                 <option value="1">Admin</option>
                 <option value="2">Estoquista</option>
-                <option value="3">Cliente</option>
               </select>
             </label>
             {errors.userGroup && <p className={styles.errorMessage}>{errors.userGroup.message}</p>}
@@ -202,7 +203,7 @@ export const UserForm = ({isEdit, currentUser}: UserFormProps) => {
         <div className={styles.inputContainer}>
           <div>
             <label>
-             {isEdit ? "Nova senha" : "Senha *"}
+              {isEdit ? "Nova senha" : "Senha *"}
               <input
                 type="password"
                 {...register('password')}

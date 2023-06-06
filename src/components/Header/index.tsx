@@ -29,12 +29,16 @@ export const Header = () => {
         }
         {
           isLoged
-            ? userLoged.userGroup && userLoged.userGroup === 'ADMIN' && <Link className={classesLink} to="/admin/user/register">
+            ?
+            userLoged.userGroup &&
+            userLoged.userGroup === 'ADMIN' &&
+            <Link className={classesLink} to="/admin/user/register">
               <button >
                 Register
               </button>
             </Link>
-            : <Link className={classesLink} to="/client/register">
+            :
+            <Link className={classesLink} to="/client/register">
               <button >
                 Register
               </button>
@@ -45,28 +49,39 @@ export const Header = () => {
             ? <>
               {
                 userLoged.userGroup
-                  ? <><Link className={classesLink} to={`/admin/user/${userLoged.id}/edit`}>
-                    <button >
-                      Dados
-                    </button>
-                  </Link>
+                  ? <>
+                    <Link className={classesLink} to={`/admin/user/${userLoged.id}/edit`}>
+                      <button >
+                        Dados
+                      </button>
+                    </Link>
                     <Link className={classesLink} to='/storage'>
                       <button >
                         Storage
                       </button>
                     </Link>
                   </>
-                  : <Link className={classesLink} to="/client/:id/edit">
-                    <button >
-                      Dados
-                    </button>
-                  </Link>
+                  :
+                  (<>
+                    <Link className={classesLink} to="/client/:id/edit">
+                      <button >
+                        Dados
+                      </button>
+                    </Link>
+                  </>)
+
               }
+              <Link className={classesLink} to="/orders">
+                <button >
+                  Pedidos
+                </button>
+              </Link>
               <Link className={classesLink} to="/admin/login" onClickCapture={signOut}>
                 <button >
                   Sair
                 </button>
-              </Link> </>
+              </Link>
+            </>
             : <Link className={classesLink} to="/admin/login">
               <button >
                 Login

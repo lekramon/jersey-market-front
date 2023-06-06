@@ -60,9 +60,9 @@ const EditProductForm = (props: any) => {
     const onSubmit = async (data: Product) => {
         try {
             if (inclusao) {
-                await axios.post(`https://jersey-market-api-production.up.railway.app/product/register`, data);
+                await axios.post(`https://jersey-market-api-production-1377.up.railway.app/product/register`, data);
             } else {
-                await axios.put(`https://jersey-market-api-production.up.railway.app/product/id${product.id}/update`, data);
+                await axios.put(`https://jersey-market-api-production-1377.up.railway.app/product/id${product.id}/update`, data);
             }
             callBack();
 

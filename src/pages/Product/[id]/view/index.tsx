@@ -17,7 +17,7 @@ const ProductPage = () => {
     const navigate = useNavigate();
 
     const getProduct = async () => {
-        const { data } = await axios.get('https://jersey-market-api-production.up.railway.app/product/list');
+        const { data } = await axios.get('https://jersey-market-api-production-1377.up.railway.app/product/list');
         let idNumber = id ? parseInt(id) : -1;
         let filteredProduct = data.filter((item: Product) => item.id === idNumber);
         setProduct(filteredProduct[0]);
@@ -25,7 +25,7 @@ const ProductPage = () => {
     };
 
     const getImages = async (id: number) => {
-        const { data } = await axios.get(`https://jersey-market-api-production.up.railway.app/product/img/id${id}`);
+        const { data } = await axios.get(`https://jersey-market-api-production-1377.up.railway.app/product/img/id${id}`);
         if (data.length > 0) {
             if (data.length > 1) {
                 setTemProximo(true);

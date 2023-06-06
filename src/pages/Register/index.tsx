@@ -44,7 +44,7 @@ export const Register = () => {
     delete data.confirmPassword;
 
     try {
-      await axios.post('https://jersey-market-api-production.up.railway.app/user/register', data);
+      await axios.post('https://jersey-market-api-production-1377.up.railway.app/user/register', data);
       toast.success('Usuário cadastrado com sucesso !', {
         position: toast.POSITION.TOP_RIGHT,
       });

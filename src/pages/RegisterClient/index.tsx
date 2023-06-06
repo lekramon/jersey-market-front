@@ -81,6 +81,18 @@ export const RegisterClient = () => {
 
     setDataCreate(data);
     setCreateAdress(true);
+    // try {
+    //   await axios.post('https://jersey-market-api-production-1377.up.railway.app/client/register', data);
+    //   toast.success('Usuário cadastrado com sucesso !', {
+    //     position: toast.POSITION.TOP_RIGHT,
+    //   });
+    //   setTimeout(() => { navigate('/admin/login') }, 2000);
+    // } catch (e) {
+    //   toast.error('Houve um erro inesperado, tente novamente!', {
+    //     position: toast.POSITION.TOP_RIGHT,
+    //   });
+    //   console.log(e);
+    // }
   };
 
   return (

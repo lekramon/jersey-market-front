@@ -11,7 +11,7 @@ interface ProductControllerProps {
 }
 
 export const ProductController = ({ product, pageType }: ProductControllerProps) => {
-  const [productAmount, setProductAmount] = useState(1);
+  const [productAmount, setProductAmount] = useState(product.amount || 1);
   const { addNewProductToCart, removeProductToCart } = useContext(CartContext);
 
   const buttonIcon = pageType === 'cart' ? trashIcon : cartIcon;
@@ -32,6 +32,16 @@ export const ProductController = ({ product, pageType }: ProductControllerProps)
     }
   };
 
+  const editProductAmountCart = (increase: boolean) => {
+    if (increase) {
+      addNewProductToCart(productProps, pageType);
+      increaseProductAmount();
+    } else {
+      addNewProductToCart(productProps, pageType, true);
+      decreaseProductAmount();
+    }
+  }
+
   const increaseProductAmount = () => {
     setProductAmount((amount) => amount + 1);
   };
@@ -45,7 +55,7 @@ export const ProductController = ({ product, pageType }: ProductControllerProps)
       <div className={styles.productControllers}>
         <button
           onClick={() => {
-            pageType === 'cart' ? addNewProductToCart(productProps) : decreaseProductAmount();
+            pageType === 'cart' ? editProductAmountCart(false) : decreaseProductAmount();
           }}
           disabled={productAmount === 1}
         >
@@ -54,19 +64,20 @@ export const ProductController = ({ product, pageType }: ProductControllerProps)
         <span>{productAmount}</span>
         <button
           onClick={() => {
-            pageType === 'cart' ? addNewProductToCart(productProps) : increaseProductAmount();
+            pageType === 'cart' ? editProductAmountCart(true) : increaseProductAmount();
           }}
         >
           +
         </button>
       </div>
       <button
+        className='flex flex-row'
         onClick={() => {
           addProductToCart();
         }}
       >
-        <img src={buttonIcon} alt="" />
-        {pageType === 'cart' && 'Remover'}
+        <img className='w-8 h-8 pt-2 pr-2' src={buttonIcon} alt="" />
+        {pageType === 'cart' && <span className='pt-1.5'>Remover</span>}
       </button>
     </div>
   );

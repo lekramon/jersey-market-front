@@ -20,7 +20,7 @@ const StoragePage = () => {
     const [inclusao, setInclusao] = useState(false);
 
     const retrieveProducts = async () => {
-        const { data } = await axios.get('https://jersey-market-api-production.up.railway.app/product/list');
+        const { data } = await axios.get('https://jersey-market-api-production-1377.up.railway.app/product/list');
         let ordenedData = data.sort(orderByRegistrationDate);
         setProducts(ordenedData);
         setFilteredProducts(ordenedData);
@@ -136,9 +136,12 @@ const StoragePage = () => {
                                         <button onClick={() => openModal(product)} className='w-40 bg-green-500 rounded-md text-white' >
                                             Alterar
                                         </button>
-                                        <button onClick={() => openModalAddImagem(product)} className='w-40 bg-green-500 rounded-md text-white' >
-                                            Adicionar Imagem
-                                        </button>
+                                        {
+                                            admin &&
+                                            <button onClick={() => openModalAddImagem(product)} className='w-40 bg-green-500 rounded-md text-white' >
+                                                Adicionar Imagem
+                                            </button>
+                                        }
                                     </div>
                                 </div>
                             )

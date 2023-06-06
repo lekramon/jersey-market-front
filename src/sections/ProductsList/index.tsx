@@ -8,7 +8,7 @@ export const ProductsList = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   const retrieveProducts = async () => {
-    const { data } = await axios.get('https://jersey-market-api-production.up.railway.app/product/list');
+    const { data } = await axios.get('https://jersey-market-api-production-1377.up.railway.app/product/list');
     setProducts(data.filter((product: any) => product.status === 'ACTIVE'));
   };
 

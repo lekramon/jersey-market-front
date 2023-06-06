@@ -3,18 +3,28 @@ import { CartContext } from '../../contexts/CartContext';
 // import { Product } from '../../contexts/CartContext';
 import { Product } from '../ProductCard';
 import { ProductController } from '../ProductController';
-import './styles.module.scss';
+import './OrderResume.css'
 import { CalcularFrete } from '../../services/CalcularFrete';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Payment from '../Payment/Payment';
+import { ToastContainer, toast } from 'react-toastify';
+
+interface FormData {
+  name: string;
+  numero: string;
+  mes: number;
+  ano: number;
+}
 
 export const OrderResume = () => {
-  const { products, totalPrice, totalPriceNumber, isLoged, userLoged } = useContext(CartContext);
+  const { products, totalPrice, totalPriceNumber, isLoged, userLoged, cleanCart } = useContext(CartContext);
   const [frete, setFrete] = useState(0);
   const [cep, setCep] = useState('');
   const [cepInvalido, setCepInvalido] = useState(false);
   const [freteIndisponivel, setFreteIndisponivel] = useState(false);
-  const [enderecoPadrao, setEnderecoPadrao] = useState();
+  const [enderecoPadrao, setEnderecoPadrao] = useState<any>();
+  const [pagamento, setPagamento] = useState(false);
 
   const refCep = useRef<HTMLInputElement>(null);
 
@@ -28,11 +38,13 @@ export const OrderResume = () => {
   }
 
   const buscarEndereco = async (id: number) => {
-    const { data } = await axios.get(`https://jersey-market-api-production.up.railway.app/client/address/id${id}`);
-    let enderecoFiltrado = data.filter((item: any) => item.type === 'DEFAULT');
-    if (enderecoFiltrado.length > 0) {
-      setEnderecoPadrao(enderecoFiltrado[0]);
-      let cepPadrao = enderecoFiltrado[0].cep ? enderecoFiltrado[0].cep.replace('-', '') : '';
+    const { data } = await axios.get(`https://jersey-market-api-production-1377.up.railway.app/client/address/id${id}`);
+    if (data.length > 0) {
+      let enderecoFiltrado = data.filter((item: any) => item.type === 'DEFAULT');
+      let endereco = enderecoFiltrado.length > 0 ? enderecoFiltrado[0] : data[0];
+
+      setEnderecoPadrao(endereco);
+      let cepPadrao = endereco.cep ? endereco.cep.replace('-', '') : '';
       setCep(cepPadrao);
       calcularFrete(cepPadrao);
     }
@@ -53,9 +65,41 @@ export const OrderResume = () => {
     }
   }
 
-  const finalizarCompra = () => {
+  const irPagamento = () => {
     if (!isLoged) {
       navigate('/client/register');
+    }
+    setPagamento(true);
+  }
+
+  const finalizarCompra = async (tipo: number, dadosCartao?: FormData) => {
+    const itensPedido = products.map((item: Product) => {
+      return {
+        produtoId: item.id,
+        quantidade: item.amount,
+        precoUnitario: item.price
+      }
+    });
+    const data = {
+      clientId: userLoged.id,
+      frete,
+      pagamento: tipo,
+      addressId: enderecoPadrao.id,
+      itensPedido
+    };
+
+    try {
+      await axios.post('https://jersey-market-api-production-1377.up.railway.app/pedidos', data);
+      toast.success('Pedido realizado com sucesso !', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      cleanCart();
+      setTimeout(() => { navigate('/') }, 1500);
+    } catch (e) {
+      toast.error('Houve um erro inesperado, tente novamente!', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      console.log(e);
     }
   }
 
@@ -67,26 +111,33 @@ export const OrderResume = () => {
 
   return (
     <>
+      <ToastContainer />
       {
         products.length > 0
           ? <div className='flex flex-row'>
-            <div className='w-1/2 flex flex-col items-center'>
-              <span className='text-2xl pb-4 pr-8'>Produtos</span>
-              <ul className='space-y-4 text-lg overflow-y-scroll pr-8 pb-4'>
-                {products.map((product: Product) => (
-                  <li className='w-96 shadow-lg p-2' key={product.id}>
-                    <img src={product.imagemSrc} alt="" />
-                    <div>
-                      <span>{product.name}</span>
-                      <div className='mt-2'>
-                        <ProductController product={product} pageType="cart" />
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
+            {
+              pagamento
+                ? <div className='w-1/2 flex flex-col items-center'>
+                  <Payment finalizarCompra={finalizarCompra} />
+                </div>
+                : <div className='w-1/2 flex flex-col items-center'>
+                  <span className='text-2xl pb-4 pr-8'>Produtos</span>
+                  <ul className='space-y-4 text-lg overflow-y-scroll pr-8 pb-4'>
+                    {products.map((product: Product) => (
+                      <li className='w-96 shadow-lg p-2' key={product.id}>
+                        <img src={product.imagemSrc} alt="" />
+                        <div>
+                          <span>{product.name}</span>
+                          <div className='mt-2'>
+                            <ProductController product={product} pageType="cart" />
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+            }
+            <div className='ml-24'>
               <div className='w-80 flex flex-col items-center shadow-lg p-12 rounded-lg'>
                 <span className='mb-4'>Subtotal</span>
                 <div className='flex items-start flex-col'>
@@ -113,9 +164,15 @@ export const OrderResume = () => {
                 </button>
               </div>
               <div className='w-80 mt-12 flex items-center flex-col'>
-                <button disabled={freteIndisponivel} onClick={finalizarCompra} className='w-full flex flex-grow justify-center p-4 rounded-xl bg-green-600 text-white disabled:bg-zinc-400'>
-                  Finalizar Compra
-                </button>
+                {
+                  !pagamento
+                    ? <button disabled={freteIndisponivel} onClick={irPagamento} className='w-full flex flex-grow justify-center p-4 rounded-xl bg-green-600 text-white disabled:bg-zinc-400'>
+                      Ir Para Pagamento
+                    </button>
+                    : <button disabled={freteIndisponivel} onClick={() => setPagamento(false)} className='w-full flex flex-grow justify-center p-4 rounded-xl bg-green-600 text-white disabled:bg-zinc-400'>
+                      Voltar
+                    </button>
+                }
                 {freteIndisponivel && <span className='text-lg text-red-500'>Frete indisponível para região</span>}
               </div>
             </div>

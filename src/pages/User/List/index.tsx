@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 
-interface User  {
+interface User {
   name: string;
   email: string;
   status: string;
@@ -13,15 +13,15 @@ interface User  {
 }
 
 export const UserList = () => {
-  
+
 
   const [users, setUsers] = useState<User[]>([])
 
-  async function retrieveUsers () {
+  async function retrieveUsers() {
     try {
-      const {data}  = await axios.get("https://jersey-market-api-production.up.railway.app/user/list")
+      const { data } = await axios.get("https://jersey-market-api-production-1377.up.railway.app/user/list")
       setUsers(data)
-      } catch(e) {
+    } catch (e) {
       console.log(e)
     }
   }
@@ -34,30 +34,30 @@ export const UserList = () => {
     <div className="container">
       <h1>Funcionários</h1>
       <table>
-      
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>E-mail</th>
-          <th>Status</th>
-          <th>Grupo</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map(users => (
-          <tr key={users.id}>
-            <td>{users.id}</td>
-            <td>{users.name}</td>
-            <td>{users.email}</td>
-            <td>{users.userGroup}</td>
-            <td>{users.status}</td>
-            <td><NavLink to={`/admin/user/${users.id}/edit`} >Editar</NavLink></td>
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Status</th>
+            <th>Grupo</th>
+            <th></th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {users.map(users => (
+            <tr key={users.id}>
+              <td>{users.id}</td>
+              <td>{users.name}</td>
+              <td>{users.email}</td>
+              <td>{users.userGroup}</td>
+              <td>{users.status}</td>
+              <td><NavLink to={`/admin/user/${users.id}/edit`} >Editar</NavLink></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

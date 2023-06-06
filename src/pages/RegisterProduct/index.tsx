@@ -11,7 +11,7 @@ interface FormData {
   nameProduct: string;
   id: number;
   quantity: number;
-  value:string;
+  value: string;
   status: string
 }
 
@@ -37,7 +37,7 @@ export const RegisterProduct = () => {
     // delete data.confirmPassword;
 
     try {
-      await axios.post('https://jersey-market-api-production.up.railway.app/user/register', data);
+      await axios.post('https://jersey-market-api-production-1377.up.railway.app/user/register', data);
       toast.success('Usuário cadastrado com sucesso !', {
         position: toast.POSITION.TOP_RIGHT,
       });

@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import ReactInputMask from 'react-input-mask';
-import styles from './styles.modules.scss';
+import styles from './styles.module.scss';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
@@ -97,7 +97,7 @@ export default function AdressForm(props: any) {
         }
         try {
             popularDadosCamposDesabilitados(data);
-            await axios.post(`https://jersey-market-api-production.up.railway.app/client/address/id${id}/register`, data);
+            await axios.post(`https://jersey-market-api-production-1377.up.railway.app/client/address/id${id}/register`, data);
             toast.success('Usuário cadastrado com sucesso !', {
                 position: toast.POSITION.TOP_RIGHT,
             });
