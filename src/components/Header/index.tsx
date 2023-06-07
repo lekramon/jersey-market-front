@@ -1,4 +1,4 @@
-import logoBackoffice from '../../assets/logoXGames.png';
+import logoBackoffice from '../../assets/logoXgames.png';
 import cartIcon from '../../assets/cart-icon.svg';
 import styles from './styles.module.scss';
 import { useContext } from 'react';

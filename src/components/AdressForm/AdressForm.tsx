@@ -5,7 +5,7 @@ import ReactInputMask from 'react-input-mask';
 import styles from './styles.module.scss';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import logoIMG from '../../assets/logoXgames.png';
 
